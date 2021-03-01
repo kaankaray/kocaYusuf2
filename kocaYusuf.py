@@ -1,5 +1,6 @@
 import os
 from math import *
+import json
 
 try:
   import keyboard 
@@ -63,7 +64,6 @@ except ImportError:
   from win32gui import GetWindowText, GetForegroundWindow
   import win32api
   
-
 url = 'https://raw.githubusercontent.com/frk1/hazedumper/master/csgo.json'
 response = requests.get(url).json()
 lastUpdated = datetime.fromtimestamp(int(response["timestamp"]))
@@ -99,7 +99,7 @@ m_bSpottedByMask = int(response["netvars"]["m_bSpottedByMask"])
 
 
 global pause_flag1, pause_flag2, pause_flag3, pause_flag4, pause_flag5, pause_flag6
-trigger_key = "+"
+global wall_key, flash_key, radar_key, bhop_key, trigger_key, aim_key
 
 def get_key(self) :
     key = win32api.GetKeyState(0x04)
@@ -225,23 +225,36 @@ def GetBestTarget(self, local):
 
 
 def main():
+    
+    with open('keybinds.json') as json_file:
+        data = json.load(json_file)
+        wall_key    = data["keybinds"]["wall_key"]
+        flash_key   = data["keybinds"]["flash_key"]
+        radar_key   = data["keybinds"]["radar_key"]
+        bhop_key    = data["keybinds"]["bhop_key"]
+        trigger_key = data["keybinds"]["trigger_key"]
+        aim_key     = data["keybinds"]["aim_key"]
+        
+        pause_flag1 = data["flags"]["isWallEnabled"]
+        pause_flag2 = data["flags"]["isNoFlashEnabled"]
+        pause_flag3 = data["flags"]["isRadarEnabled"]
+        pause_flag4 = data["flags"]["isBhopEnabled"]
+        pause_flag5 = data["flags"]["isTriggerEnabled"]
+        pause_flag6 = data["flags"]["isAimEnabled"]
+        
     def state():
         os.system('cls')
         print("Koca yusuf2 (weak version) \nUpdated:", lastUpdated.strftime("%a %d %b %Y - %H:%M"))
-        print("\nWall(F5): ", 'You are having a good day.' if not pause_flag1 else 'Off')
-        print("No flash(F6): ", "On" if not pause_flag2 else "Off")
-        print("Radar(F7): ", "On" if not pause_flag3 else "Off")
-        print("bhop(F8): ", "Hop hop" if not pause_flag4 else "Off")
-        print("Trigger(F9): ", "On" if not pause_flag5 else "Off")
-        # print("Aimbot(F10): ", "Bum bum" if not pause_flag6 else "Off")
-        
-    pause_flag1 = pause_flag2 = pause_flag3 = pause_flag4 = pause_flag5 = pause_flag6 = True
+        print("\nWall({}): ".format(wall_key), 'Off' if not pause_flag1 else 'A good day')
+        print("No flash({}): ".format(flash_key), "Off" if not pause_flag2 else "On")
+        print("Radar({}): ".format(radar_key), "Off" if not pause_flag3 else "On")
+        print("bhop({}): ".format(bhop_key), "Off" if not pause_flag4 else "Hop hop")
+        print("Trigger({}): ".format(trigger_key), "Off" if not pause_flag5 else "On")
+        # print("Aimbot({}): ".format(aim_key), "Bum bum" if not pause_flag6 else "Off")
     
     try :
         pm = pymem.Pymem("csgo.exe")
     except :
-        response = requests.get(url).json()
-        lastUpdated = datetime.fromtimestamp(int(response["timestamp"]))
         os.system('cls')
         print("Koca yusuf2 (weak version) \nUpdated:", lastUpdated.strftime("%a %d %b %Y - %H:%M"))
         print("CS:GO is not running.")
@@ -256,14 +269,14 @@ def main():
     sleep(2)
     while True:
         try: 
+            if not GetWindowText(GetForegroundWindow()) == "Counter-Strike: Global Offensive":
+                continue
             #ESP
-            if keyboard.is_pressed('f5'):
+            if keyboard.is_pressed(wall_key):
                 pause_flag1 = not pause_flag1
                 state()
                 sleep(0.25)
             if pause_flag1:
-                pass
-            else:
                 glow_manager = pm.read_int(client + dwGlowObjectManager)
                 player = pm.read_int(client + dwLocalPlayer)
                 playerTeam = pm.read_int(player + m_iTeamNum)
@@ -288,26 +301,22 @@ def main():
                             pm.write_float(glow_manager + entity_glow * 0x38 + 0x10, float(0.8))                # Alpha
                             pm.write_int(glow_manager + entity_glow * 0x38 + 0x24, 1)                           # Enable glow
             #No flash
-            if keyboard.is_pressed('f6'):
+            if keyboard.is_pressed(flash_key):
                 pause_flag2 = not pause_flag2
                 state()
                 sleep(0.25)
             if pause_flag2:
-                pass
-            else:
                 player = pm.read_int(client + dwLocalPlayer)
                 if player:
                     flash_value = player + m_flFlashMaxAlpha
                     if flash_value:
                         pm.write_float(flash_value, float(0))
             #Radar Hack
-            if keyboard.is_pressed('f7'):
+            if keyboard.is_pressed(radar_key):
                 pause_flag3 = not pause_flag3
                 state()
                 sleep(0.25)
             if pause_flag3:
-                pass
-            else:
                 if pm.read_int(client + dwLocalPlayer):
                     localplayer = pm.read_int(client + dwLocalPlayer)
                     localplayer_team = pm.read_int(localplayer + m_iTeamNum)
@@ -318,15 +327,11 @@ def main():
                             if entity_team != localplayer_team:
                                 pm.write_int(entity + m_bSpotted, 1)   
             # BHOP
-            if not GetWindowText(GetForegroundWindow()) == "Counter-Strike: Global Offensive":
-                    continue
-            if keyboard.is_pressed('f8'):
+            if keyboard.is_pressed(bhop_key):
                 pause_flag4 = not pause_flag4
                 state()
                 sleep(0.25)
             if pause_flag4:
-                pass
-            else:
                 if keyboard.is_pressed("space"):
                     force_jump = client + dwForceJump
                     player = pm.read_int(client + dwLocalPlayer)
@@ -338,13 +343,11 @@ def main():
                             pm.write_int(force_jump, 4)
                     time.sleep(0.002)
             # Trigger
-            if keyboard.is_pressed('f9'):
+            if keyboard.is_pressed(trigger_key):
                 pause_flag5 = not pause_flag5
                 state()
                 sleep(0.25)
             if pause_flag5:
-                pass
-            else:
                 player = pm.read_int(client + dwLocalPlayer)
                 entity_id = pm.read_int(player + m_iCrosshairId)
                 entity = pm.read_int(client + dwEntityList + (entity_id - 1) * 0x10)
@@ -353,17 +356,15 @@ def main():
                 player_team = pm.read_int(player + m_iTeamNum)
 
                 if entity_id > 0 and entity_id <= 64 and player_team != entity_team:
-                    time.sleep(0.02)
+                    time.sleep(0.01)
                     pm.write_int(client + dwForceAttack, 6)
-                    time.sleep(0.04)
-            # Aimbot (Not available.)
-            if keyboard.is_pressed('f13'):
+                    time.sleep(0.05)
+            # Aimbot (Not available atm.)
+            if keyboard.is_pressed(aim_key):
                 pause_flag6 = not pause_flag6
                 state()
                 sleep(0.25)
             if pause_flag6:
-                pass
-            else:
                 time.sleep(0.002)
 
                 aimlocalplayer = pm.read_int(client + dwLocalPlayer)
