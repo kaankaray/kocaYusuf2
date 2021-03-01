@@ -227,12 +227,12 @@ def GetBestTarget(self, local):
 def main():
     def state():
         os.system('cls')
-        print("Koca yusuf2 (zayif versiyon) \nUpdated:", lastUpdated.strftime("%a %d %b %Y - %H:%M"))
-        print("\nWall(F5): ", 'Iyi gunundesin.' if not pause_flag1 else 'Off')
-        print("No flash(F6): ", "Hoppaa" if not pause_flag2 else "Off")
-        print("Radar(F7): ", "Goruyorum oc" if not pause_flag3 else "Off")
+        print("Koca yusuf2 (weak version) \nUpdated:", lastUpdated.strftime("%a %d %b %Y - %H:%M"))
+        print("\nWall(F5): ", 'You are having a good day.' if not pause_flag1 else 'Off')
+        print("No flash(F6): ", "On" if not pause_flag2 else "Off")
+        print("Radar(F7): ", "On" if not pause_flag3 else "Off")
         print("bhop(F8): ", "Hop hop" if not pause_flag4 else "Off")
-        print("Trigger({}): ".format(trigger_key) , "No delay" if not pause_flag5 else "Delayed")
+        print("Trigger(F9): ", "On" if not pause_flag5 else "Off")
         # print("Aimbot(F10): ", "Bum bum" if not pause_flag6 else "Off")
         
     pause_flag1 = pause_flag2 = pause_flag3 = pause_flag4 = pause_flag5 = pause_flag6 = True
@@ -241,13 +241,13 @@ def main():
         pm = pymem.Pymem("csgo.exe")
     except :
         response = requests.get(url).json()
+        lastUpdated = datetime.fromtimestamp(int(response["timestamp"]))
         os.system('cls')
-        print("Koca yusuf2 (zayif versiyon) \nUpdated:", lastUpdated.strftime("%a %d %b %Y - %H:%M"))
+        print("Koca yusuf2 (weak version) \nUpdated:", lastUpdated.strftime("%a %d %b %Y - %H:%M"))
         print("CS:GO is not running.")
         sleep(5);
         return
     state()
-    print("Bam bam modu basladi.")
     client = pymem.process.module_from_name(pm.process_handle, "client.dll").lpBaseOfDll
     engine = pymem.process.module_from_name(pm.process_handle, "engine.dll").lpBaseOfDll
     engine_pointer = pm.read_int(engine + dwClientState)
@@ -342,8 +342,9 @@ def main():
                 pause_flag5 = not pause_flag5
                 state()
                 sleep(0.25)
-            
-            if keyboard.is_pressed(trigger_key):
+            if pause_flag5:
+                pass
+            else:
                 player = pm.read_int(client + dwLocalPlayer)
                 entity_id = pm.read_int(player + m_iCrosshairId)
                 entity = pm.read_int(client + dwEntityList + (entity_id - 1) * 0x10)
@@ -352,15 +353,11 @@ def main():
                 player_team = pm.read_int(player + m_iTeamNum)
 
                 if entity_id > 0 and entity_id <= 64 and player_team != entity_team:
+                    time.sleep(0.02)
                     pm.write_int(client + dwForceAttack, 6)
-                if pause_flag5:
-                    time.sleep(0.06)
-                else:
-                    time.sleep(0.006)
-
-
-            # Aimbot
-            if keyboard.is_pressed('f10'):
+                    time.sleep(0.04)
+            # Aimbot (Not available.)
+            if keyboard.is_pressed('f13'):
                 pause_flag6 = not pause_flag6
                 state()
                 sleep(0.25)
@@ -431,9 +428,6 @@ def main():
                                                     
                                         pm.write_float(enginepointer + dwClientState_ViewAngles, pitch)
                                         pm.write_float(enginepointer + dwClientState_ViewAngles + 0x4, yaw)
-                
-                
-                
         except:
             time.sleep(0.1)
             continue
