@@ -17,7 +17,14 @@ except ImportError:
   os.system("python -m pip install pymem")
   import pymem
   import pymem.process
-  
+
+try:
+  import psutil
+except ImportError:
+  print("A module is not existing. Installing module: psutil")
+  os.system("python -m pip install psutil")
+  import psutil
+
 try:
   import time 
   from time import sleep
@@ -63,7 +70,7 @@ except ImportError:
   os.system("python -m pip install pywin32")
   from win32gui import GetWindowText, GetForegroundWindow
   import win32api
-  
+
 url = 'https://raw.githubusercontent.com/frk1/hazedumper/master/csgo.json'
 response = requests.get(url).json()
 lastUpdated = datetime.fromtimestamp(int(response["timestamp"]))
@@ -96,9 +103,7 @@ m_iCrosshairId = int(response["netvars"]["m_iCrosshairId"])
 m_bGunGameImmunity = int(response["netvars"]["m_bGunGameImmunity"])
 m_bSpottedByMask = int(response["netvars"]["m_bSpottedByMask"])
 
-
-
-global pause_flag1, pause_flag2, pause_flag3, pause_flag4, pause_flag5, pause_flag6
+global appShouldWork, pause_flag1, pause_flag2, pause_flag3, pause_flag4, pause_flag5, pause_flag6
 global wall_key, flash_key, radar_key, bhop_key, trigger_key, aim_key
 
 def get_key(self) :
@@ -222,10 +227,8 @@ def GetBestTarget(self, local):
                 return target
 
 
-
-
 def main():
-    
+
     with open('keybinds.json') as json_file:
         data = json.load(json_file)
         wall_key    = data["keybinds"]["wall_key"]
@@ -234,7 +237,7 @@ def main():
         bhop_key    = data["keybinds"]["bhop_key"]
         trigger_key = data["keybinds"]["trigger_key"]
         aim_key     = data["keybinds"]["aim_key"]
-        
+
         pause_flag1 = data["flags"]["isWallEnabled"]
         pause_flag2 = data["flags"]["isNoFlashEnabled"]
         pause_flag3 = data["flags"]["isRadarEnabled"]
@@ -251,9 +254,12 @@ def main():
         print("bhop({}): ".format(bhop_key), "Off" if not pause_flag4 else "Hop hop")
         print("Trigger({}): ".format(trigger_key), "Off" if not pause_flag5 else "On")
         # print("Aimbot({}): ".format(aim_key), "Bum bum" if not pause_flag6 else "Off")
-    
+    pm = nan
     try :
         pm = pymem.Pymem("csgo.exe")
+        client = pymem.process.module_from_name(pm.process_handle, "client.dll").lpBaseOfDll
+        engine = pymem.process.module_from_name(pm.process_handle, "engine.dll").lpBaseOfDll
+        engine_pointer = pm.read_int(engine + dwClientState)
     except :
         os.system('cls')
         print("Koca yusuf2 (weak version) \nUpdated:", lastUpdated.strftime("%a %d %b %Y - %H:%M"))
@@ -261,16 +267,15 @@ def main():
         sleep(5);
         return
     state()
-    client = pymem.process.module_from_name(pm.process_handle, "client.dll").lpBaseOfDll
-    engine = pymem.process.module_from_name(pm.process_handle, "engine.dll").lpBaseOfDll
-    engine_pointer = pm.read_int(engine + dwClientState)
-    
-    state()
     sleep(2)
     while True:
         try: 
             if not GetWindowText(GetForegroundWindow()) == "Counter-Strike: Global Offensive":
+                if not ("csgo.exe" in (p.name() for p in psutil.process_iter())): # If csgo is not running
+                    appShouldWork = False
+                    break
                 continue
+
             #ESP
             if keyboard.is_pressed(wall_key):
                 pause_flag1 = not pause_flag1
@@ -325,7 +330,8 @@ def main():
                             entity = pm.read_int(client + dwEntityList + i * 0x10)
                             entity_team = pm.read_int(entity + m_iTeamNum)
                             if entity_team != localplayer_team:
-                                pm.write_int(entity + m_bSpotted, 1)   
+                                pm.write_int(entity + m_bSpotted, 1)
+
             # BHOP
             if keyboard.is_pressed(bhop_key):
                 pause_flag4 = not pause_flag4
@@ -431,12 +437,14 @@ def main():
                                         pm.write_float(enginepointer + dwClientState_ViewAngles + 0x4, yaw)
         except:
             time.sleep(0.1)
+
             continue
 
     
     
 if __name__ == '__main__':
-    while True:
+    appShouldWork = True
+    while appShouldWork:
         main()
 
 os.system('pause')
