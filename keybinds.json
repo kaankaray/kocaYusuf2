@@ -10,10 +10,10 @@
   
   "flags": {
 	".comment": "True values will be enabled when cheat has launched.",
-    "isWallEnabled": true,
+    "isWallEnabled": false,
     "isNoFlashEnabled": false,
-    "isRadarEnabled": true,
-    "isBhopEnabled": true,
+    "isRadarEnabled": false,
+    "isBhopEnabled": false,
     "isTriggerEnabled": false,
     "isAimEnabled": false
   }

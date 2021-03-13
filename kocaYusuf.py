@@ -1,6 +1,7 @@
 import os
 from math import *
 import json
+import sys
 
 try:
   import keyboard 
@@ -71,6 +72,11 @@ except ImportError:
   from win32gui import GetWindowText, GetForegroundWindow
   import win32api
 
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
+
+
 url = 'https://raw.githubusercontent.com/frk1/hazedumper/master/csgo.json'
 response = requests.get(url).json()
 lastUpdated = datetime.fromtimestamp(int(response["timestamp"]))
@@ -103,8 +109,164 @@ m_iCrosshairId = int(response["netvars"]["m_iCrosshairId"])
 m_bGunGameImmunity = int(response["netvars"]["m_bGunGameImmunity"])
 m_bSpottedByMask = int(response["netvars"]["m_bSpottedByMask"])
 
-global appShouldWork, pause_flag1, pause_flag2, pause_flag3, pause_flag4, pause_flag5, pause_flag6
+appShouldWork = False
+pause_flag1 = False
+pause_flag2 = False
+pause_flag3 = False
+pause_flag4 = False
+pause_flag5 = False
+pause_flag6 = False
+
 global wall_key, flash_key, radar_key, bhop_key, trigger_key, aim_key
+
+class Ui_MainWindow(object):
+    def ultraInstinctCheck(self):
+        if (pause_flag1 and pause_flag2 and pause_flag3 and pause_flag4 and pause_flag5):
+            print("ULTRA INSTINCT")
+            MainWindow.setStyleSheet("background-image: url(:/newPrefix/ultrabeeg.jpeg);")
+        else:
+            MainWindow.setStyleSheet("background-image: url(:/newPrefix/beeg.jpg);")
+
+
+    def wallhack(self):
+        print("wallhack")
+        global pause_flag1
+        pause_flag1 = not pause_flag1
+        if pause_flag1:
+            self.pushButton_3.setStyleSheet("image: url(:/newPrefix/flagGreenturkey.png);background-image: url(:/newPrefix/dark.jpg);")
+        else:
+            self.pushButton_3.setStyleSheet("image: url(:/newPrefix/220px-Flag_of_Turkey.jpg);background-image: url(:/newPrefix/dark.jpg);")
+        self.ultraInstinctCheck()
+
+    def noflash(self):
+        print("noflash")
+        global pause_flag2
+        pause_flag2 = not pause_flag2
+        if pause_flag2:
+            self.pushButton_4.setStyleSheet("image: url(:/newPrefix/flagGreenturkey.png);background-image: url(:/newPrefix/dark.jpg);")
+        else:
+            self.pushButton_4.setStyleSheet("image: url(:/newPrefix/220px-Flag_of_Turkey.jpg);background-image: url(:/newPrefix/dark.jpg);")
+        self.ultraInstinctCheck()
+
+    def radar(self):
+
+        print("radar")
+        global pause_flag3
+        pause_flag3 = not pause_flag3
+        if pause_flag3:
+            self.pushButton_6.setStyleSheet("image: url(:/newPrefix/flagGreenturkey.png);background-image: url(:/newPrefix/dark.jpg);")
+        else:
+            self.pushButton_6.setStyleSheet("image: url(:/newPrefix/220px-Flag_of_Turkey.jpg);background-image: url(:/newPrefix/dark.jpg);")
+        self.ultraInstinctCheck()
+
+    def bhop(self):
+        print("bhop")
+        global pause_flag4
+        pause_flag4 = not pause_flag4
+        if pause_flag4:
+            self.pushButton_7.setStyleSheet("image: url(:/newPrefix/flagGreenturkey.png);background-image: url(:/newPrefix/dark.jpg);")
+        else:
+            self.pushButton_7.setStyleSheet("image: url(:/newPrefix/220px-Flag_of_Turkey.jpg);background-image: url(:/newPrefix/dark.jpg);")
+        self.ultraInstinctCheck()
+
+    def trigger(self):
+        print("trigger")
+        global pause_flag5
+        pause_flag5 = not pause_flag5
+        if pause_flag5:
+            self.pushButton_8.setStyleSheet("image: url(:/newPrefix/flagGreenturkey.png);background-image: url(:/newPrefix/dark.jpg);")
+        else:
+            self.pushButton_8.setStyleSheet("image: url(:/newPrefix/220px-Flag_of_Turkey.jpg);background-image: url(:/newPrefix/dark.jpg);")
+        self.ultraInstinctCheck()
+
+    def setupUi(self, MainWindow):
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(736, 429)
+        MainWindow.setStyleSheet("background-image: url(:/newPrefix/beeg.jpg);")
+        self.centralwidget = QWidget(MainWindow)
+        self.centralwidget.setObjectName("centralwidget")
+        font = QFont()
+        font.setFamily("Comic Sans MS")
+        font.setPointSize(11)
+
+        self.pushButton_3 =QPushButton(self.centralwidget)
+        self.pushButton_3.setGeometry(QRect(530, 0, 141, 51))
+        self.pushButton_3.setStyleSheet("image: url(:/newPrefix/220px-Flag_of_Turkey.jpg);background-image: url(:/newPrefix/dark.jpg);")
+        self.pushButton_3.setObjectName("pushButton_3")
+        self.pushButton_3.clicked.connect(self.wallhack)
+        self.pushButton_3.setFont(font)
+
+        self.pushButton_4 =QPushButton(self.centralwidget)
+        self.pushButton_4.setGeometry(QRect(530, 70, 141, 51))
+        self.pushButton_4.setStyleSheet("image: url(:/newPrefix/220px-Flag_of_Turkey.jpg);background-image: url(:/newPrefix/dark.jpg);")
+        self.pushButton_4.setObjectName("pushButton_4")
+        self.pushButton_4.clicked.connect(self.noflash)
+        self.pushButton_4.setFont(font)
+
+        self.pushButton_6 =QPushButton(self.centralwidget)
+        self.pushButton_6.setGeometry(QRect(530, 140, 141, 51))
+        self.pushButton_6.setStyleSheet("image: url(:/newPrefix/220px-Flag_of_Turkey.jpg);background-image: url(:/newPrefix/dark.jpg);")
+        self.pushButton_6.setObjectName("pushButton_6")
+        self.pushButton_6.clicked.connect(self.radar)
+        self.pushButton_6.setFont(font)
+
+        self.pushButton_7 =QPushButton(self.centralwidget)
+        self.pushButton_7.setGeometry(QRect(530, 210, 141, 51))
+        self.pushButton_7.setStyleSheet("image: url(:/newPrefix/220px-Flag_of_Turkey.jpg);background-image: url(:/newPrefix/dark.jpg);")
+        self.pushButton_7.setObjectName("pushButton_7")
+        self.pushButton_7.clicked.connect(self.bhop)
+        self.pushButton_7.setFont(font)
+
+        self.pushButton_8 =QPushButton(self.centralwidget)
+        self.pushButton_8.setGeometry(QRect(530, 280, 141, 51))
+
+        self.pushButton_8.setStyleSheet("image: url(:/newPrefix/220px-Flag_of_Turkey.jpg);background-image: url(:/newPrefix/dark.jpg);")
+        self.pushButton_8.setObjectName("pushButton_8")
+        self.pushButton_8.clicked.connect(self.trigger)
+        self.pushButton_8.setFont(font)
+
+        MainWindow.setCentralWidget(self.centralwidget)
+        self.menubar =QMenuBar(MainWindow)
+        self.menubar.setGeometry(QRect(0, 0, 736, 21))
+        self.menubar.setObjectName("menubar")
+        MainWindow.setMenuBar(self.menubar)
+        self.statusbar =QStatusBar(MainWindow)
+        self.statusbar.setObjectName("statusbar")
+        MainWindow.setStatusBar(self.statusbar)
+
+        self.retranslateUi(MainWindow)
+        QMetaObject.connectSlotsByName(MainWindow)
+
+
+    def retranslateUi(self, MainWindow):
+        _translate = QCoreApplication.translate
+        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setToolTip(_translate("MainWindow", "<html><head/><body><p><br/></p></body></html>"))
+
+       # self.pushButton_3.setToolTip(_translate("MainWindow",
+                                               # "<html><head/><body><p><img src=\":/newPrefix/220px-Flag_of_Turkey.jpg\"/></p></body></html>"))
+        self.pushButton_3.setText(_translate("MainWindow", "Wallhack"))
+       # self.pushButton_4.setToolTip(_translate("MainWindow",
+                                               # "<html><head/><body><p><img src=\":/newPrefix/220px-Flag_of_Turkey.jpg\"/></p></body></html>"))
+        self.pushButton_4.setText(_translate("MainWindow", "NoFlash"))
+        #self.pushButton_6.setToolTip(_translate("MainWindow",
+                                               # "<html><head/><body><p><img src=\":/newPrefix/220px-Flag_of_Turkey.jpg\"/></p></body></html>"))
+        self.pushButton_6.setText(_translate("MainWindow", "RadarHack"))
+       # self.pushButton_7.setToolTip(_translate("MainWindow",
+                                              #  "<html><head/><body><p><img src=\":/newPrefix/220px-Flag_of_Turkey.jpg\"/></p></body></html>"))
+        self.pushButton_7.setText(_translate("MainWindow", "BHOP"))
+        #self.pushButton_8.setToolTip(_translate("MainWindow",
+                                               # "<html><head/><body><p><img src=\":/newPrefix/220px-Flag_of_Turkey.jpg\"/></p></body></html>"))
+        self.pushButton_8.setText(_translate("MainWindow", "Trigger"))
+
+    def __init__(self, *args, **kwargs):
+        print("Window started")
+        #super(MainWindow, self).__init__(*args, **kwargs)
+        worker = Worker()
+        self.threadpool = QThreadPool()
+        self.threadpool.start(worker)
+
+import ui_resource_rc
 
 def get_key(self) :
     key = win32api.GetKeyState(0x04)
@@ -228,25 +390,9 @@ def GetBestTarget(self, local):
 
 
 def main():
-
-    with open('keybinds.json') as json_file:
-        data = json.load(json_file)
-        wall_key    = data["keybinds"]["wall_key"]
-        flash_key   = data["keybinds"]["flash_key"]
-        radar_key   = data["keybinds"]["radar_key"]
-        bhop_key    = data["keybinds"]["bhop_key"]
-        trigger_key = data["keybinds"]["trigger_key"]
-        aim_key     = data["keybinds"]["aim_key"]
-
-        pause_flag1 = data["flags"]["isWallEnabled"]
-        pause_flag2 = data["flags"]["isNoFlashEnabled"]
-        pause_flag3 = data["flags"]["isRadarEnabled"]
-        pause_flag4 = data["flags"]["isBhopEnabled"]
-        pause_flag5 = data["flags"]["isTriggerEnabled"]
-        pause_flag6 = data["flags"]["isAimEnabled"]
         
     def state():
-        os.system('cls')
+        # os.system('cls')
         print("Koca yusuf2 (weak version) \nUpdated:", lastUpdated.strftime("%a %d %b %Y - %H:%M"))
         print("\nWall({}): ".format(wall_key), 'Off' if not pause_flag1 else 'A good day')
         print("No flash({}): ".format(flash_key), "Off" if not pause_flag2 else "On")
@@ -256,12 +402,12 @@ def main():
         # print("Aimbot({}): ".format(aim_key), "Bum bum" if not pause_flag6 else "Off")
     pm = nan
     try :
+        # os.system('cls')
         pm = pymem.Pymem("csgo.exe")
         client = pymem.process.module_from_name(pm.process_handle, "client.dll").lpBaseOfDll
         engine = pymem.process.module_from_name(pm.process_handle, "engine.dll").lpBaseOfDll
         engine_pointer = pm.read_int(engine + dwClientState)
     except :
-        os.system('cls')
         print("Koca yusuf2 (weak version) \nUpdated:", lastUpdated.strftime("%a %d %b %Y - %H:%M"))
         print("CS:GO is not running.")
         sleep(5);
@@ -277,10 +423,12 @@ def main():
                 continue
 
             #ESP
-            if keyboard.is_pressed(wall_key):
-                pause_flag1 = not pause_flag1
-                state()
-                sleep(0.25)
+            global pause_flag1
+            global pause_flag2
+            global pause_flag3
+            global pause_flag4
+            global pause_flag5
+            global pause_flag6
             if pause_flag1:
                 glow_manager = pm.read_int(client + dwGlowObjectManager)
                 player = pm.read_int(client + dwLocalPlayer)
@@ -306,10 +454,6 @@ def main():
                             pm.write_float(glow_manager + entity_glow * 0x38 + 0x10, float(0.8))                # Alpha
                             pm.write_int(glow_manager + entity_glow * 0x38 + 0x24, 1)                           # Enable glow
             #No flash
-            if keyboard.is_pressed(flash_key):
-                pause_flag2 = not pause_flag2
-                state()
-                sleep(0.25)
             if pause_flag2:
                 player = pm.read_int(client + dwLocalPlayer)
                 if player:
@@ -317,10 +461,6 @@ def main():
                     if flash_value:
                         pm.write_float(flash_value, float(0))
             #Radar Hack
-            if keyboard.is_pressed(radar_key):
-                pause_flag3 = not pause_flag3
-                state()
-                sleep(0.25)
             if pause_flag3:
                 if pm.read_int(client + dwLocalPlayer):
                     localplayer = pm.read_int(client + dwLocalPlayer)
@@ -333,10 +473,6 @@ def main():
                                 pm.write_int(entity + m_bSpotted, 1)
 
             # BHOP
-            if keyboard.is_pressed(bhop_key):
-                pause_flag4 = not pause_flag4
-                state()
-                sleep(0.25)
             if pause_flag4:
                 if keyboard.is_pressed("space"):
                     force_jump = client + dwForceJump
@@ -349,10 +485,6 @@ def main():
                             pm.write_int(force_jump, 4)
                     time.sleep(0.002)
             # Trigger
-            if keyboard.is_pressed(trigger_key):
-                pause_flag5 = not pause_flag5
-                state()
-                sleep(0.25)
             if pause_flag5:
                 player = pm.read_int(client + dwLocalPlayer)
                 entity_id = pm.read_int(player + m_iCrosshairId)
@@ -366,10 +498,6 @@ def main():
                     pm.write_int(client + dwForceAttack, 6)
                     time.sleep(0.05)
             # Aimbot (Not available atm.)
-            if keyboard.is_pressed(aim_key):
-                pause_flag6 = not pause_flag6
-                state()
-                sleep(0.25)
             if pause_flag6:
                 time.sleep(0.002)
 
@@ -440,11 +568,37 @@ def main():
 
             continue
 
-    
+
+class Worker(QRunnable):
+    @pyqtSlot()
+    def run(self):
+        print("Thread start")
+        main()
+        print("Thread complete")
     
 if __name__ == '__main__':
-    appShouldWork = True
-    while appShouldWork:
-        main()
+    with open('keybinds.json') as json_file:
+        data = json.load(json_file)
+        wall_key    = data["keybinds"]["wall_key"]
+        flash_key   = data["keybinds"]["flash_key"]
+        radar_key   = data["keybinds"]["radar_key"]
+        bhop_key    = data["keybinds"]["bhop_key"]
+        trigger_key = data["keybinds"]["trigger_key"]
+        aim_key     = data["keybinds"]["aim_key"]
+
+        pause_flag1 = data["flags"]["isWallEnabled"]
+        pause_flag2 = data["flags"]["isNoFlashEnabled"]
+        pause_flag3 = data["flags"]["isRadarEnabled"]
+        pause_flag4 = data["flags"]["isBhopEnabled"]
+        pause_flag5 = data["flags"]["isTriggerEnabled"]
+        pause_flag6 = data["flags"]["isAimEnabled"]
+
+
+    app = QApplication(sys.argv)
+    MainWindow = QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())
 
 os.system('pause')
