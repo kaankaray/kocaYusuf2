@@ -1,7 +1,9 @@
-dir
-mode con:cols=33 lines=10
-color a
 echo off
 cls
-python kocaYusuf.py
-pause
+ECHO This is for debugging, double click on pyw file to start the hack w/o the extra info
+echo .
+echo .
+echo .
+
+python kocaYusuf.pyw
+exit
