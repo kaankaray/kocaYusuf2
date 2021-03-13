@@ -1,0 +1,12 @@
+<RCC>
+  <qresource prefix="newPrefix">
+    <file>gui.py</file>
+    <file>beeg.jpg</file>
+    <file>Color-Green.jpg</file>
+    <file>dark.jpg</file>
+    <file>flag.png</file>
+    <file>flagGreenturkey.png</file>
+    <file>Green.jfif</file>
+    <file>ultrabeeg.jpeg</file>
+  </qresource>
+</RCC>

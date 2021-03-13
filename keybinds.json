@@ -1,18 +1,18 @@
 {
   "keybinds": {
-    "wall_key": "F5",
+    "wall_key": "alt",
     "flash_key": "F6",
     "radar_key": "F7",
     "bhop_key": "F8",
-    "trigger_key": "F9",
+    "trigger_key": "+",
     "aim_key": "F13"  
   },
   
   "flags": {
 	".comment": "True values will be enabled when cheat has launched.",
-    "isWallEnabled": false,
+    "isWallEnabled": true,
     "isNoFlashEnabled": false,
-    "isRadarEnabled": false,
+    "isRadarEnabled": true,
     "isBhopEnabled": false,
     "isTriggerEnabled": false,
     "isAimEnabled": false
