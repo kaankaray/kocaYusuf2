@@ -13,4 +13,4 @@ def execute():
                     globals.pm.write_int(force_jump, 5)
                     time.sleep(0.08)
                     globals.pm.write_int(force_jump, 4)
-            time.sleep(0.002)
+            # time.sleep(0.002) # human error
