@@ -1,11 +1,11 @@
 {
   "keybinds": {
-    "wall_key": "alt",
-    "flash_key": "F6",
-    "radar_key": "F7",
-    "bhop_key": "F8",
+    "wall_key": "alt_l",
+    "flash_key": "f6",
+    "radar_key": "f7",
+    "bhop_key": "f8",
     "trigger_key": "+",
-    "aim_key": "F13"  
+    "aim_key": "f13"
   },
   
   "flags": {

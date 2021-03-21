@@ -1,5 +1,6 @@
 import os
 import json
+import sys
 
 try:
     import keyboard
@@ -7,6 +8,7 @@ except ImportError:
     print("A module is not existing. Installing module: keyboard")
     os.system("python -m pip install keyboard")
     import keyboard
+
 try:
     import pymem
     import pymem.process
@@ -69,6 +71,17 @@ except ImportError:
     from win32gui import GetWindowText, GetForegroundWindow
     import win32api
 
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+try:
+    from PyQt5 import *
+    from PyQt5.QtCore import *
+    from PyQt5.QtGui import *
+    from PyQt5.QtWidgets import *
+except ImportError:
+    print("A module is not existing. Installing module: PyQt5")
+    os.system("python -m pip install PyQt5")
+    from PyQt5 import *
+    from PyQt5.QtCore import *
+    from PyQt5.QtGui import *
+    from PyQt5.QtWidgets import *
+
+
